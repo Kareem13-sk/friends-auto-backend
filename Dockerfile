@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11
+FROM eclipse-temurin:17
 
 WORKDIR /app
 
@@ -6,8 +6,8 @@ COPY . .
 
 RUN chmod +x mvnw
 
-RUN ./mvnw clean install
+RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "target/friends-auto-mobile-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/com.friendsauto-0.0.1-SNAPSHOT.jar"]

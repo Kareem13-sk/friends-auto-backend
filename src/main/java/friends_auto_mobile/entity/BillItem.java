@@ -17,6 +17,8 @@ public class BillItem {
 
     private Double price;
 
+    private Double percentage;
+
     private Double total;
 
     @ManyToOne
@@ -53,6 +55,14 @@ public class BillItem {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(Double percentage) {
+        this.percentage = percentage;
     }
 
     public Double getTotal() {

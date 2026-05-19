@@ -1,9 +1,13 @@
 package friends_auto_mobile.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "bills")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Bill {
 
     @Id
@@ -11,12 +15,16 @@ public class Bill {
     private Long id;
 
     private String customerName;
+
     private Double totalAmount;
-    private Double discount;
-    private Double gst;
-    private Double finalAmount;
+
     private Double paidAmount;
+
     private Double balanceAmount;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "bill_id")
+    private List<BillItem> items;
 
     public Bill() {
     }
@@ -41,30 +49,6 @@ public class Bill {
         this.totalAmount = totalAmount;
     }
 
-    public Double getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Double discount) {
-        this.discount = discount;
-    }
-
-    public Double getGst() {
-        return gst;
-    }
-
-    public void setGst(Double gst) {
-        this.gst = gst;
-    }
-
-    public Double getFinalAmount() {
-        return finalAmount;
-    }
-
-    public void setFinalAmount(Double finalAmount) {
-        this.finalAmount = finalAmount;
-    }
-
     public Double getPaidAmount() {
         return paidAmount;
     }
@@ -79,5 +63,13 @@ public class Bill {
 
     public void setBalanceAmount(Double balanceAmount) {
         this.balanceAmount = balanceAmount;
+    }
+
+    public List<BillItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<BillItem> items) {
+        this.items = items;
     }
 }

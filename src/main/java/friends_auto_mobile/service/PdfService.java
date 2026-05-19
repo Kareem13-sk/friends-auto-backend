@@ -3,6 +3,7 @@ package friends_auto_mobile.service;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import friends_auto_mobile.entity.Bill;
+import friends_auto_mobile.entity.BillItem;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -30,7 +31,7 @@ public class PdfService {
                     FontFactory.getFont(FontFactory.HELVETICA, 12);
 
             Paragraph title =
-                    new Paragraph("Friends Auto Mobile GST Invoice", titleFont);
+                    new Paragraph("Friends Auto Mobile Invoice", titleFont);
 
             title.setAlignment(Element.ALIGN_CENTER);
 
@@ -42,20 +43,37 @@ public class PdfService {
                     "Customer Name: " + bill.getCustomerName(),
                     normalFont));
 
+            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph(
+                    "Bill Items:",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14)));
+
+            document.add(new Paragraph(" "));
+
+            for (BillItem item : bill.getItems()) {
+
+                document.add(new Paragraph(
+                        "Product: " + item.getProductName(),
+                        normalFont));
+
+                document.add(new Paragraph(
+                        "Quantity: " + item.getQuantity(),
+                        normalFont));
+
+                document.add(new Paragraph(
+                        "Price: ₹" + item.getPrice(),
+                        normalFont));
+
+                document.add(new Paragraph(
+                        "Total: ₹" + item.getTotal(),
+                        normalFont));
+
+                document.add(new Paragraph(" "));
+            }
+
             document.add(new Paragraph(
                     "Total Amount: ₹" + bill.getTotalAmount(),
-                    normalFont));
-
-            document.add(new Paragraph(
-                    "Discount: ₹" + bill.getDiscount(),
-                    normalFont));
-
-            document.add(new Paragraph(
-                    "GST (18%): ₹" + bill.getGst(),
-                    normalFont));
-
-            document.add(new Paragraph(
-                    "Final Amount: ₹" + bill.getFinalAmount(),
                     normalFont));
 
             document.add(new Paragraph(

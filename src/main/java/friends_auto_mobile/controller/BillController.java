@@ -33,13 +33,42 @@ public class BillController {
     @PostMapping
     public Bill createBill(@RequestBody Bill bill) {
 
+        // IMPORTANT FIX
+
+        if (bill.getItems() != null) {
+
+            for (BillItem item : bill.getItems()) {
+
+                item.setBill(bill);
+            }
+        }
+
+        // BALANCE CALCULATION
+
         double balance =
-                bill.getTotalAmount() - bill.getPaidAmount();
+                bill.getTotalAmount()
+                        - bill.getPaidAmount();
 
         bill.setBalanceAmount(balance);
 
-        for (BillItem item : bill.getItems()) {
-            item.setBill(bill);
+        // UPDATE CUSTOMER BALANCE
+
+        Customer customer =
+                customerRepository
+                        .findAll()
+                        .stream()
+                        .filter(c ->
+                                c.getCustomerName()
+                                        .equalsIgnoreCase(
+                                                bill.getCustomerName()))
+                        .findFirst()
+                        .orElse(null);
+
+        if (customer != null) {
+
+            customer.setTotalBalance(balance);
+
+            customerRepository.save(customer);
         }
 
         return billRepository.save(bill);
@@ -47,6 +76,7 @@ public class BillController {
 
     @GetMapping
     public List<Bill> getAllBills() {
+
         return billRepository.findAll();
     }
 
@@ -54,7 +84,8 @@ public class BillController {
     public List<Bill> getBillsByCustomer(
             @PathVariable String customerName) {
 
-        return billRepository.findByCustomerName(customerName);
+        return billRepository
+                .findByCustomerName(customerName);
     }
 
     @GetMapping("/{id}/invoice")
@@ -62,12 +93,15 @@ public class BillController {
             @PathVariable Long id) {
 
         Bill bill =
-                billRepository.findById(id).orElseThrow();
+                billRepository
+                        .findById(id)
+                        .orElseThrow();
 
         ByteArrayInputStream invoice =
                 pdfService.generateInvoice(bill);
 
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers =
+                new HttpHeaders();
 
         headers.add(
                 "Content-Disposition",
@@ -79,7 +113,8 @@ public class BillController {
             return ResponseEntity
                     .ok()
                     .headers(headers)
-                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentType(
+                            MediaType.APPLICATION_PDF)
                     .body(invoice.readAllBytes());
 
         } catch (Exception e) {

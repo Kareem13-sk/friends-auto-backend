@@ -1,6 +1,7 @@
 package friends_auto_mobile.controller;
 
 import friends_auto_mobile.entity.Bill;
+import friends_auto_mobile.entity.BillItem;
 import friends_auto_mobile.entity.Customer;
 import friends_auto_mobile.repository.BillRepository;
 import friends_auto_mobile.repository.CustomerRepository;
@@ -36,6 +37,10 @@ public class BillController {
                 bill.getTotalAmount() - bill.getPaidAmount();
 
         bill.setBalanceAmount(balance);
+
+        for (BillItem item : bill.getItems()) {
+            item.setBill(bill);
+        }
 
         return billRepository.save(bill);
     }

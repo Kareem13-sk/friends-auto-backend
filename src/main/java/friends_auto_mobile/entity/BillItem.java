@@ -1,5 +1,6 @@
 package friends_auto_mobile.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +18,11 @@ public class BillItem {
     private Double price;
 
     private Double total;
+
+    @ManyToOne
+    @JoinColumn(name = "bill_id")
+    @JsonBackReference
+    private Bill bill;
 
     public BillItem() {
     }
@@ -55,5 +61,13 @@ public class BillItem {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public Bill getBill() {
+        return bill;
+    }
+
+    public void setBill(Bill bill) {
+        this.bill = bill;
     }
 }

@@ -1,13 +1,12 @@
 package friends_auto_mobile.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "bills")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Bill {
 
     @Id
@@ -22,8 +21,11 @@ public class Bill {
 
     private Double balanceAmount;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "bill_id")
+    @OneToMany(
+            mappedBy = "bill",
+            cascade = CascadeType.ALL
+    )
+    @JsonManagedReference
     private List<BillItem> items;
 
     public Bill() {
@@ -31,6 +33,10 @@ public class Bill {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCustomerName() {

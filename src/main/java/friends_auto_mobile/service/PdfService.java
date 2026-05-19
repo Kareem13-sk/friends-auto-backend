@@ -1,6 +1,7 @@
 package friends_auto_mobile.service;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import friends_auto_mobile.entity.Bill;
 import friends_auto_mobile.entity.BillItem;
@@ -16,7 +17,8 @@ public class PdfService {
 
         Document document = new Document();
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream out =
+                new ByteArrayOutputStream();
 
         try {
 
@@ -25,13 +27,30 @@ public class PdfService {
             document.open();
 
             Font titleFont =
-                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20);
+                    FontFactory.getFont(
+                            FontFactory.HELVETICA_BOLD,
+                            24
+                    );
+
+            Font headingFont =
+                    FontFactory.getFont(
+                            FontFactory.HELVETICA_BOLD,
+                            16
+                    );
 
             Font normalFont =
-                    FontFactory.getFont(FontFactory.HELVETICA, 12);
+                    FontFactory.getFont(
+                            FontFactory.HELVETICA,
+                            12
+                    );
+
+            // TITLE
 
             Paragraph title =
-                    new Paragraph("Friends Auto Mobile Invoice", titleFont);
+                    new Paragraph(
+                            "Friends Auto Mobile Invoice",
+                            titleFont
+                    );
 
             title.setAlignment(Element.ALIGN_CENTER);
 
@@ -39,63 +58,120 @@ public class PdfService {
 
             document.add(new Paragraph(" "));
 
+            // CUSTOMER DETAILS
+
             document.add(new Paragraph(
-                    "Customer Name: " + bill.getCustomerName(),
-                    normalFont));
+                    "Customer Name: "
+                            + bill.getCustomerName(),
+                    normalFont
+            ));
 
             document.add(new Paragraph(" "));
 
-            document.add(new Paragraph(
-                    "Bill Items:",
-                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14)));
+            // BILL ITEMS HEADING
+
+            Paragraph itemHeading =
+                    new Paragraph(
+                            "Purchased Items",
+                            headingFont
+                    );
+
+            document.add(itemHeading);
 
             document.add(new Paragraph(" "));
+
+            // TABLE
+
+            PdfPTable table =
+                    new PdfPTable(4);
+
+            table.setWidthPercentage(100);
+
+            table.setSpacingBefore(10f);
+
+            table.addCell("Product");
+            table.addCell("Quantity");
+            table.addCell("Price");
+            table.addCell("Total");
 
             for (BillItem item : bill.getItems()) {
 
-                document.add(new Paragraph(
-                        "Product: " + item.getProductName(),
-                        normalFont));
+                table.addCell(item.getProductName());
 
-                document.add(new Paragraph(
-                        "Quantity: " + item.getQuantity(),
-                        normalFont));
+                table.addCell(
+                        String.valueOf(
+                                item.getQuantity()
+                        )
+                );
 
-                document.add(new Paragraph(
-                        "Price: ₹" + item.getPrice(),
-                        normalFont));
+                table.addCell(
+                        "₹" + item.getPrice()
+                );
 
-                document.add(new Paragraph(
-                        "Total: ₹" + item.getTotal(),
-                        normalFont));
-
-                document.add(new Paragraph(" "));
+                table.addCell(
+                        "₹" + item.getTotal()
+                );
             }
 
-            document.add(new Paragraph(
-                    "Total Amount: ₹" + bill.getTotalAmount(),
-                    normalFont));
+            document.add(table);
 
-            document.add(new Paragraph(
-                    "Paid Amount: ₹" + bill.getPaidAmount(),
-                    normalFont));
+            document.add(new Paragraph(" "));
 
-            document.add(new Paragraph(
-                    "Balance Amount: ₹" + bill.getBalanceAmount(),
-                    normalFont));
+            // BILL SUMMARY
+
+            Paragraph summaryHeading =
+                    new Paragraph(
+                            "Bill Summary",
+                            headingFont
+                    );
+
+            document.add(summaryHeading);
 
             document.add(new Paragraph(" "));
 
             document.add(new Paragraph(
-                    "Thank You For Visiting Friends Auto Mobile",
-                    normalFont));
+                    "Total Amount: ₹"
+                            + bill.getTotalAmount(),
+                    normalFont
+            ));
+
+            document.add(new Paragraph(
+                    "Paid Amount: ₹"
+                            + bill.getPaidAmount(),
+                    normalFont
+            ));
+
+            document.add(new Paragraph(
+                    "Balance Amount: ₹"
+                            + bill.getBalanceAmount(),
+                    normalFont
+            ));
+
+            document.add(new Paragraph(" "));
+
+            // FOOTER
+
+            Paragraph footer =
+                    new Paragraph(
+                            "Thank You For Visiting Friends Auto Mobile",
+                            normalFont
+                    );
+
+            footer.setAlignment(
+                    Element.ALIGN_CENTER
+            );
+
+            document.add(footer);
 
             document.close();
 
         } catch (Exception e) {
+
             e.printStackTrace();
         }
 
-        return new ByteArrayInputStream(out.toByteArray());
+        return new ByteArrayInputStream(
+                out.toByteArray()
+        );
     }
 }

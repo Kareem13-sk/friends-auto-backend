@@ -3,6 +3,7 @@ package friends_auto_mobile.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,10 +24,11 @@ public class Bill {
 
     @OneToMany(
             mappedBy = "bill",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     @JsonManagedReference
-    private List<BillItem> items;
+    private List<BillItem> items = new ArrayList<>();
 
     public Bill() {
     }
@@ -76,6 +78,11 @@ public class Bill {
     }
 
     public void setItems(List<BillItem> items) {
+
         this.items = items;
+
+        for (BillItem item : items) {
+            item.setBill(this);
+        }
     }
 }

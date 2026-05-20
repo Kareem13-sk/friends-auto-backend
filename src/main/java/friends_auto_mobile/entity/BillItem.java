@@ -17,7 +17,11 @@ public class BillItem {
 
     private Double price;
 
+    // PROFIT / EXTRA PERCENTAGE
     private Double percentage;
+
+    // FINAL PRICE AFTER PERCENTAGE
+    private Double finalPrice;
 
     private Double total;
 
@@ -28,6 +32,10 @@ public class BillItem {
 
     public BillItem() {
     }
+
+    // =========================
+    // GETTERS AND SETTERS
+    // =========================
 
     public Long getId() {
         return id;
@@ -63,6 +71,14 @@ public class BillItem {
 
     public void setPercentage(Double percentage) {
         this.percentage = percentage;
+    }
+
+    public Double getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(Double finalPrice) {
+        this.finalPrice = finalPrice;
     }
 
     public Double getTotal() {

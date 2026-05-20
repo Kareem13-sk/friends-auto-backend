@@ -11,9 +11,14 @@ public class Product {
     private Long id;
 
     private String productName;
+
     private String category;
+
     private Double price;
+
     private Integer stock;
+
+    private Double defaultPercentage;
 
     public Product() {
     }
@@ -52,5 +57,13 @@ public class Product {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public Double getDefaultPercentage() {
+        return defaultPercentage;
+    }
+
+    public void setDefaultPercentage(Double defaultPercentage) {
+        this.defaultPercentage = defaultPercentage;
     }
 }

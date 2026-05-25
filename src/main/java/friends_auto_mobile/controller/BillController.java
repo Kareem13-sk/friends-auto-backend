@@ -43,7 +43,7 @@ public class BillController {
     @PostMapping
     public Bill createBill(@RequestBody Bill bill) {
 
-        // IMPORTANT FIX
+        // SET BILL INSIDE ITEMS
 
         if (bill.getItems() != null) {
 
@@ -53,7 +53,7 @@ public class BillController {
             }
         }
 
-        // BALANCE CALCULATION
+        // BALANCE
 
         double balance =
                 bill.getTotalAmount()
@@ -133,5 +133,37 @@ public class BillController {
                     .internalServerError()
                     .build();
         }
+    }
+
+    @PutMapping("/{id}")
+    public Bill updateBill(
+            @PathVariable Long id,
+            @RequestBody Bill updatedBill) {
+
+        Bill bill =
+                billRepository.findById(id).orElseThrow();
+
+        bill.setCustomerName(
+                updatedBill.getCustomerName());
+
+        bill.setTotalAmount(
+                updatedBill.getTotalAmount());
+
+        bill.setPaidAmount(
+                updatedBill.getPaidAmount());
+
+        bill.setBalanceAmount(
+                updatedBill.getBalanceAmount());
+
+        bill.setItems(
+                updatedBill.getItems());
+
+        return billRepository.save(bill);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBill(@PathVariable Long id) {
+
+        billRepository.deleteById(id);
     }
 }

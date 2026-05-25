@@ -17,11 +17,13 @@ public class CustomerController {
 
     @PostMapping
     public Customer addCustomer(@RequestBody Customer customer) {
+
         return customerRepository.save(customer);
     }
 
     @GetMapping
     public List<Customer> getAllCustomers() {
+
         return customerRepository.findAll();
     }
 
@@ -33,9 +35,15 @@ public class CustomerController {
         Customer customer =
                 customerRepository.findById(id).orElseThrow();
 
-        customer.setCustomerName(updatedCustomer.getCustomerName());
-        customer.setPhone(updatedCustomer.getPhone());
-        customer.setAddress(updatedCustomer.getAddress());
+        customer.setCustomerName(
+                updatedCustomer.getCustomerName());
+
+        customer.setPhone(
+                updatedCustomer.getPhone());
+
+        customer.setAddress(
+                updatedCustomer.getAddress());
+
         customer.setDiscountPercentage(
                 updatedCustomer.getDiscountPercentage());
 

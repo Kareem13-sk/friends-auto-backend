@@ -46,4 +46,27 @@ public class CustomerBrandDiscountController {
 
         repository.deleteById(id);
     }
+    @PutMapping("/{id}")
+    public CustomerBrandDiscount update(
+            @PathVariable Long id,
+            @RequestBody CustomerBrandDiscount data) {
+
+        CustomerBrandDiscount existing =
+                repository.findById(id)
+                        .orElseThrow();
+
+        existing.setCustomerId(
+                data.getCustomerId());
+
+        existing.setCustomerName(
+                data.getCustomerName());
+
+        existing.setBrand(
+                data.getBrand());
+
+        existing.setDiscountPercentage(
+                data.getDiscountPercentage());
+
+        return repository.save(existing);
+    }
 }

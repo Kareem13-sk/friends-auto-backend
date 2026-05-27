@@ -12,6 +12,8 @@ public class CustomerBrandDiscount {
 
     private Long customerId;
 
+    private String customerName; // ADD THIS
+
     private String brand;
 
     private Double discountPercentage;
@@ -29,6 +31,14 @@ public class CustomerBrandDiscount {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public String getBrand() {

@@ -20,6 +20,8 @@ public class Product {
 
     private Double defaultPercentage;
 
+    private String brand;
+
     public Product() {
     }
 
@@ -65,5 +67,13 @@ public class Product {
 
     public void setDefaultPercentage(Double defaultPercentage) {
         this.defaultPercentage = defaultPercentage;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 }

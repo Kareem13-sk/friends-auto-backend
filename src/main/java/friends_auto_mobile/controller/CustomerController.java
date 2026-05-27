@@ -64,8 +64,17 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCustomer(@PathVariable Long id) {
+    public String deleteCustomer(@PathVariable Long id) {
 
-        customerRepository.deleteById(id);
+        try {
+
+            customerRepository.deleteById(id);
+
+            return "Customer Deleted Successfully";
+
+        } catch (Exception e) {
+
+            return "Delete Failed : " + e.getMessage();
+        }
     }
 }

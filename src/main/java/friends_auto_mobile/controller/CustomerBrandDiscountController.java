@@ -28,8 +28,22 @@ public class CustomerBrandDiscountController {
 
         return repository.findAll();
     }
+
+    @GetMapping("/find")
+    public CustomerBrandDiscount findDiscount(
+            @RequestParam Long customerId,
+            @RequestParam String brand) {
+
+        return repository
+                .findByCustomerIdAndBrand(
+                        customerId,
+                        brand)
+                .orElse(null);
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
+
         repository.deleteById(id);
     }
 }

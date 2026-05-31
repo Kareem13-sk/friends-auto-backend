@@ -15,8 +15,7 @@ public class LoginController {
     private UserRepository repository;
 
     @PostMapping("/login")
-    public User login(
-            @RequestBody User request) {
+    public User login(@RequestBody User request) {
 
         return repository
                 .findByUsernameAndPassword(
@@ -28,5 +27,10 @@ public class LoginController {
                                 "Invalid Credentials"
                         )
                 );
+    }
+
+    @GetMapping("/test-users")
+    public Object testUsers() {
+        return repository.findAll();
     }
 }

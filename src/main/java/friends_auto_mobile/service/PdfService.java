@@ -52,23 +52,31 @@ public class PdfService {
                             titleFont
                     );
 
-            title.setAlignment(Element.ALIGN_CENTER);
+            title.setAlignment(
+                    Element.ALIGN_CENTER
+            );
 
             document.add(title);
 
-            document.add(new Paragraph(" "));
+            document.add(
+                    new Paragraph(" ")
+            );
 
             // CUSTOMER DETAILS
 
-            document.add(new Paragraph(
-                    "Customer Name: "
-                            + bill.getCustomerName(),
-                    normalFont
-            ));
+            document.add(
+                    new Paragraph(
+                            "Customer Name : "
+                                    + bill.getCustomerName(),
+                            normalFont
+                    )
+            );
 
-            document.add(new Paragraph(" "));
+            document.add(
+                    new Paragraph(" ")
+            );
 
-            // BILL ITEMS HEADING
+            // ITEMS HEADING
 
             Paragraph itemHeading =
                     new Paragraph(
@@ -78,25 +86,40 @@ public class PdfService {
 
             document.add(itemHeading);
 
-            document.add(new Paragraph(" "));
+            document.add(
+                    new Paragraph(" ")
+            );
 
             // TABLE
 
             PdfPTable table =
-                    new PdfPTable(4);
+                    new PdfPTable(7);
 
             table.setWidthPercentage(100);
 
             table.setSpacingBefore(10f);
 
+            table.addCell("S.No");
             table.addCell("Product");
-            table.addCell("Quantity");
-            table.addCell("Price");
+            table.addCell("Qty");
+            table.addCell("%");
+            table.addCell("Actual Price");
+            table.addCell("Final Price");
             table.addCell("Total");
+
+            int serialNo = 1;
 
             for (BillItem item : bill.getItems()) {
 
-                table.addCell(item.getProductName());
+                table.addCell(
+                        String.valueOf(
+                                serialNo++
+                        )
+                );
+
+                table.addCell(
+                        item.getProductName()
+                );
 
                 table.addCell(
                         String.valueOf(
@@ -105,17 +128,41 @@ public class PdfService {
                 );
 
                 table.addCell(
-                        "₹" + item.getPrice()
+                        String.valueOf(
+                                item.getPercentage()
+                        ) + "%"
                 );
 
                 table.addCell(
-                        "₹" + item.getTotal()
+                        "₹" +
+                                String.format(
+                                        "%.2f",
+                                        item.getActualPrice()
+                                )
+                );
+
+                table.addCell(
+                        "₹" +
+                                String.format(
+                                        "%.2f",
+                                        item.getPrice()
+                                )
+                );
+
+                table.addCell(
+                        "₹" +
+                                String.format(
+                                        "%.2f",
+                                        item.getTotal()
+                                )
                 );
             }
 
             document.add(table);
 
-            document.add(new Paragraph(" "));
+            document.add(
+                    new Paragraph(" ")
+            );
 
             // BILL SUMMARY
 
@@ -127,27 +174,46 @@ public class PdfService {
 
             document.add(summaryHeading);
 
-            document.add(new Paragraph(" "));
+            document.add(
+                    new Paragraph(" ")
+            );
 
-            document.add(new Paragraph(
-                    "Total Amount: ₹"
-                            + bill.getTotalAmount(),
-                    normalFont
-            ));
+            document.add(
+                    new Paragraph(
+                            "Total Amount : ₹"
+                                    + String.format(
+                                    "%.2f",
+                                    bill.getTotalAmount()
+                            ),
+                            normalFont
+                    )
+            );
 
-            document.add(new Paragraph(
-                    "Paid Amount: ₹"
-                            + bill.getPaidAmount(),
-                    normalFont
-            ));
+            document.add(
+                    new Paragraph(
+                            "Paid Amount : ₹"
+                                    + String.format(
+                                    "%.2f",
+                                    bill.getPaidAmount()
+                            ),
+                            normalFont
+                    )
+            );
 
-            document.add(new Paragraph(
-                    "Balance Amount: ₹"
-                            + bill.getBalanceAmount(),
-                    normalFont
-            ));
+            document.add(
+                    new Paragraph(
+                            "Balance Amount : ₹"
+                                    + String.format(
+                                    "%.2f",
+                                    bill.getBalanceAmount()
+                            ),
+                            normalFont
+                    )
+            );
 
-            document.add(new Paragraph(" "));
+            document.add(
+                    new Paragraph(" ")
+            );
 
             // FOOTER
 
@@ -174,4 +240,5 @@ public class PdfService {
                 out.toByteArray()
         );
     }
+
 }

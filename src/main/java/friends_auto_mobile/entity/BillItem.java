@@ -15,9 +15,13 @@ public class BillItem {
 
     private Integer quantity;
 
+    // ORIGINAL PRODUCT PRICE
+    private Double actualPrice;
+
+    // FINAL PRICE AFTER DISCOUNT
     private Double price;
 
-    // PROFIT / EXTRA PERCENTAGE
+    // DISCOUNT PERCENTAGE
     private Double percentage;
 
     // FINAL PRICE AFTER PERCENTAGE
@@ -45,7 +49,8 @@ public class BillItem {
         return productName;
     }
 
-    public void setProductName(String productName) {
+    public void setProductName(
+            String productName) {
         this.productName = productName;
     }
 
@@ -53,15 +58,26 @@ public class BillItem {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(
+            Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Double getActualPrice() {
+        return actualPrice;
+    }
+
+    public void setActualPrice(
+            Double actualPrice) {
+        this.actualPrice = actualPrice;
     }
 
     public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(
+            Double price) {
         this.price = price;
     }
 
@@ -69,7 +85,8 @@ public class BillItem {
         return percentage;
     }
 
-    public void setPercentage(Double percentage) {
+    public void setPercentage(
+            Double percentage) {
         this.percentage = percentage;
     }
 
@@ -77,7 +94,8 @@ public class BillItem {
         return finalPrice;
     }
 
-    public void setFinalPrice(Double finalPrice) {
+    public void setFinalPrice(
+            Double finalPrice) {
         this.finalPrice = finalPrice;
     }
 
@@ -85,7 +103,8 @@ public class BillItem {
         return total;
     }
 
-    public void setTotal(Double total) {
+    public void setTotal(
+            Double total) {
         this.total = total;
     }
 
@@ -93,7 +112,8 @@ public class BillItem {
         return bill;
     }
 
-    public void setBill(Bill bill) {
+    public void setBill(
+            Bill bill) {
         this.bill = bill;
     }
 }

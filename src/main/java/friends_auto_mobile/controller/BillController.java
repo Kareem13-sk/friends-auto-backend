@@ -140,23 +140,41 @@ public class BillController {
             @PathVariable Long id,
             @RequestBody Bill updatedBill) {
 
-        Bill bill =
-                billRepository.findById(id).orElseThrow();
+        Bill bill = billRepository.findById(id).orElseThrow();
 
-        bill.setCustomerName(
-                updatedBill.getCustomerName());
+        bill.setCustomerName(updatedBill.getCustomerName());
+        bill.setTotalAmount(updatedBill.getTotalAmount());
+        bill.setPaidAmount(updatedBill.getPaidAmount());
 
-        bill.setTotalAmount(
-                updatedBill.getTotalAmount());
+        double balance =
+                updatedBill.getTotalAmount()
+                        - updatedBill.getPaidAmount();
 
-        bill.setPaidAmount(
-                updatedBill.getPaidAmount());
+        bill.setBalanceAmount(balance);
 
-        bill.setBalanceAmount(
-                updatedBill.getBalanceAmount());
+        if (updatedBill.getItems() != null) {
 
-        bill.setItems(
-                updatedBill.getItems());
+            bill.getItems().clear();
+
+            for (BillItem item : updatedBill.getItems()) {
+                item.setBill(bill);
+                bill.getItems().add(item);
+            }
+        }
+
+        Customer customer =
+                customerRepository.findAll()
+                        .stream()
+                        .filter(c ->
+                                c.getCustomerName().equalsIgnoreCase(
+                                        bill.getCustomerName()))
+                        .findFirst()
+                        .orElse(null);
+
+        if (customer != null) {
+            customer.setTotalBalance(balance);
+            customerRepository.save(customer);
+        }
 
         return billRepository.save(bill);
     }

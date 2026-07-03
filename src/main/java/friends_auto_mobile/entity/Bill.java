@@ -17,13 +17,19 @@ public class Bill {
 
     private String customerName;
 
+    // Products Total
     private Double totalAmount;
 
+    // Amount Paid
     private Double paidAmount;
 
+    // Remaining Balance
     private Double balanceAmount;
 
-    // NEW FIELD
+    // Previous Pending Amount
+    private Double previousBalance;
+
+    // Bill Date
     private LocalDate billDate;
 
     @OneToMany(
@@ -77,7 +83,15 @@ public class Bill {
         this.balanceAmount = balanceAmount;
     }
 
-    // NEW GETTER & SETTER
+    // NEW
+    public Double getPreviousBalance() {
+        return previousBalance;
+    }
+
+    public void setPreviousBalance(Double previousBalance) {
+        this.previousBalance = previousBalance;
+    }
+
     public LocalDate getBillDate() {
         return billDate;
     }
@@ -91,11 +105,15 @@ public class Bill {
     }
 
     public void setItems(List<BillItem> items) {
+
         this.items = items;
 
         if (items != null) {
+
             for (BillItem item : items) {
+
                 item.setBill(this);
+
             }
         }
     }

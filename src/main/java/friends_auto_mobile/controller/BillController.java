@@ -44,34 +44,52 @@ public class BillController {
     @PostMapping
     public Bill createBill(@RequestBody Bill bill) {
 
-        // SET BILL INSIDE ITEMS
+        // Set Bill inside Bill Items
         if (bill.getItems() != null) {
             for (BillItem item : bill.getItems()) {
                 item.setBill(bill);
             }
         }
 
-        // CALCULATE BALANCE
-        double balance =
-                bill.getTotalAmount() - bill.getPaidAmount();
+        double productsTotal =
+                bill.getTotalAmount() == null
+                        ? 0
+                        : bill.getTotalAmount();
 
-        bill.setBalanceAmount(balance);
+        double previousBalance =
+                bill.getPreviousBalance() == null
+                        ? 0
+                        : bill.getPreviousBalance();
 
-        // SAVE CURRENT DATE
+        double paid =
+                bill.getPaidAmount() == null
+                        ? 0
+                        : bill.getPaidAmount();
+
+        double grandTotal =
+                productsTotal + previousBalance;
+
+        bill.setBalanceAmount(grandTotal - paid);
+
+        // Save Bill Date
         bill.setBillDate(LocalDate.now());
 
-        // UPDATE CUSTOMER BALANCE
+        // Update Customer Balance
         Customer customer =
                 customerRepository.findAll()
                         .stream()
                         .filter(c ->
                                 c.getCustomerName()
-                                        .equalsIgnoreCase(bill.getCustomerName()))
+                                        .equalsIgnoreCase(
+                                                bill.getCustomerName()))
                         .findFirst()
                         .orElse(null);
 
         if (customer != null) {
-            customer.setTotalBalance(balance);
+
+            customer.setTotalBalance(
+                    bill.getBalanceAmount());
+
             customerRepository.save(customer);
         }
 
@@ -101,7 +119,8 @@ public class BillController {
         ByteArrayInputStream invoice =
                 pdfService.generateInvoice(bill);
 
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers =
+                new HttpHeaders();
 
         headers.add(
                 "Content-Disposition",
@@ -133,15 +152,30 @@ public class BillController {
                         .orElseThrow(() ->
                                 new RuntimeException("Bill not found"));
 
-        bill.setPaidAmount(updatedBill.getPaidAmount());
+        double productsTotal =
+                bill.getTotalAmount() == null
+                        ? 0
+                        : bill.getTotalAmount();
 
-        double balance =
-                bill.getTotalAmount()
-                        - updatedBill.getPaidAmount();
+        double previousBalance =
+                bill.getPreviousBalance() == null
+                        ? 0
+                        : bill.getPreviousBalance();
 
-        bill.setBalanceAmount(balance);
+        double paid =
+                updatedBill.getPaidAmount() == null
+                        ? 0
+                        : updatedBill.getPaidAmount();
 
-        // KEEP ORIGINAL BILL DATE
+        double grandTotal =
+                productsTotal + previousBalance;
+
+        bill.setPaidAmount(paid);
+
+        bill.setBalanceAmount(
+                grandTotal - paid);
+
+        // Keep original Bill Date
         if (bill.getBillDate() == null) {
             bill.setBillDate(LocalDate.now());
         }
@@ -158,7 +192,8 @@ public class BillController {
 
         if (customer != null) {
 
-            customer.setTotalBalance(balance);
+            customer.setTotalBalance(
+                    bill.getBalanceAmount());
 
             customerRepository.save(customer);
         }
@@ -167,7 +202,9 @@ public class BillController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteBill(@PathVariable Long id) {
+    public void deleteBill(
+            @PathVariable Long id) {
+
         billRepository.deleteById(id);
     }
 }

@@ -140,34 +140,23 @@ public class BillController {
             @PathVariable Long id,
             @RequestBody Bill updatedBill) {
 
-        Bill bill = billRepository.findById(id).orElseThrow();
+        Bill bill = billRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bill not found"));
 
-        bill.setCustomerName(updatedBill.getCustomerName());
-        bill.setTotalAmount(updatedBill.getTotalAmount());
+        // Update only bill amounts
         bill.setPaidAmount(updatedBill.getPaidAmount());
 
         double balance =
-                updatedBill.getTotalAmount()
-                        - updatedBill.getPaidAmount();
+                bill.getTotalAmount() - updatedBill.getPaidAmount();
 
         bill.setBalanceAmount(balance);
 
-        if (updatedBill.getItems() != null) {
-
-            bill.getItems().clear();
-
-            for (BillItem item : updatedBill.getItems()) {
-                item.setBill(bill);
-                bill.getItems().add(item);
-            }
-        }
-
+        // Update customer balance
         Customer customer =
                 customerRepository.findAll()
                         .stream()
-                        .filter(c ->
-                                c.getCustomerName().equalsIgnoreCase(
-                                        bill.getCustomerName()))
+                        .filter(c -> c.getCustomerName()
+                                .equalsIgnoreCase(bill.getCustomerName()))
                         .findFirst()
                         .orElse(null);
 

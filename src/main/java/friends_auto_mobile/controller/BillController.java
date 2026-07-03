@@ -152,15 +152,38 @@ public class BillController {
                         .orElseThrow(() ->
                                 new RuntimeException("Bill not found"));
 
+        // Update customer
+        bill.setCustomerName(updatedBill.getCustomerName());
+
+        // Update bill items
+        if (updatedBill.getItems() != null) {
+
+            bill.getItems().clear();
+
+            for (BillItem item : updatedBill.getItems()) {
+
+                item.setBill(bill);
+
+                bill.getItems().add(item);
+            }
+        }
+
+        // Update amounts
+        bill.setTotalAmount(updatedBill.getTotalAmount());
+
+        bill.setPreviousBalance(updatedBill.getPreviousBalance());
+
+        bill.setPaidAmount(updatedBill.getPaidAmount());
+
         double productsTotal =
-                bill.getTotalAmount() == null
+                updatedBill.getTotalAmount() == null
                         ? 0
-                        : bill.getTotalAmount();
+                        : updatedBill.getTotalAmount();
 
         double previousBalance =
-                bill.getPreviousBalance() == null
+                updatedBill.getPreviousBalance() == null
                         ? 0
-                        : bill.getPreviousBalance();
+                        : updatedBill.getPreviousBalance();
 
         double paid =
                 updatedBill.getPaidAmount() == null
@@ -170,16 +193,14 @@ public class BillController {
         double grandTotal =
                 productsTotal + previousBalance;
 
-        bill.setPaidAmount(paid);
+        bill.setBalanceAmount(grandTotal - paid);
 
-        bill.setBalanceAmount(
-                grandTotal - paid);
-
-        // Keep original Bill Date
+        // Keep existing bill date
         if (bill.getBillDate() == null) {
             bill.setBillDate(LocalDate.now());
         }
 
+        // Update customer balance
         Customer customer =
                 customerRepository.findAll()
                         .stream()

@@ -155,16 +155,27 @@ public class BillController {
         // Update customer
         bill.setCustomerName(updatedBill.getCustomerName());
 
-        // Update bill items
+        // Remove existing products
+        bill.getItems().clear();
+
+        // Add new products
         if (updatedBill.getItems() != null) {
 
-            bill.getItems().clear();
+            for (BillItem oldItem : updatedBill.getItems()) {
 
-            for (BillItem item : updatedBill.getItems()) {
+                BillItem newItem = new BillItem();
 
-                item.setBill(bill);
+                newItem.setProductName(oldItem.getProductName());
+                newItem.setQuantity(oldItem.getQuantity());
+                newItem.setActualPrice(oldItem.getActualPrice());
+                newItem.setPercentage(oldItem.getPercentage());
+                newItem.setPrice(oldItem.getPrice());
+                newItem.setFinalPrice(oldItem.getFinalPrice());
+                newItem.setTotal(oldItem.getTotal());
 
-                bill.getItems().add(item);
+                newItem.setBill(bill);
+
+                bill.getItems().add(newItem);
             }
         }
 
@@ -195,7 +206,7 @@ public class BillController {
 
         bill.setBalanceAmount(grandTotal - paid);
 
-        // Keep existing bill date
+        // Keep original bill date
         if (bill.getBillDate() == null) {
             bill.setBillDate(LocalDate.now());
         }

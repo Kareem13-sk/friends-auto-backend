@@ -15,16 +15,16 @@ public class BillItem {
 
     private Integer quantity;
 
-    // ORIGINAL PRODUCT PRICE
+    // Original Product Price
     private Double actualPrice;
 
-    // FINAL PRICE AFTER DISCOUNT
+    // Final Price After Discount
     private Double price;
 
-    // DISCOUNT PERCENTAGE
+    // Discount Percentage
     private Double percentage;
 
-    // FINAL PRICE AFTER PERCENTAGE
+    // Final Price After Percentage
     private Double finalPrice;
 
     private Double total;
@@ -37,20 +37,24 @@ public class BillItem {
     public BillItem() {
     }
 
-    // =========================
-    // GETTERS AND SETTERS
-    // =========================
+    // ==========================
+    // GETTERS & SETTERS
+    // ==========================
 
     public Long getId() {
         return id;
+    }
+
+    // NEW
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getProductName() {
         return productName;
     }
 
-    public void setProductName(
-            String productName) {
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
@@ -58,8 +62,7 @@ public class BillItem {
         return quantity;
     }
 
-    public void setQuantity(
-            Integer quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
@@ -67,8 +70,7 @@ public class BillItem {
         return actualPrice;
     }
 
-    public void setActualPrice(
-            Double actualPrice) {
+    public void setActualPrice(Double actualPrice) {
         this.actualPrice = actualPrice;
     }
 
@@ -76,8 +78,7 @@ public class BillItem {
         return price;
     }
 
-    public void setPrice(
-            Double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -85,8 +86,7 @@ public class BillItem {
         return percentage;
     }
 
-    public void setPercentage(
-            Double percentage) {
+    public void setPercentage(Double percentage) {
         this.percentage = percentage;
     }
 
@@ -94,8 +94,7 @@ public class BillItem {
         return finalPrice;
     }
 
-    public void setFinalPrice(
-            Double finalPrice) {
+    public void setFinalPrice(Double finalPrice) {
         this.finalPrice = finalPrice;
     }
 
@@ -103,8 +102,7 @@ public class BillItem {
         return total;
     }
 
-    public void setTotal(
-            Double total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 
@@ -112,8 +110,7 @@ public class BillItem {
         return bill;
     }
 
-    public void setBill(
-            Bill bill) {
+    public void setBill(Bill bill) {
         this.bill = bill;
     }
 }

@@ -3,6 +3,7 @@ package friends_auto_mobile.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,9 @@ public class Bill {
     private Double paidAmount;
 
     private Double balanceAmount;
+
+    // NEW FIELD
+    private LocalDate billDate;
 
     @OneToMany(
             mappedBy = "bill",
@@ -73,16 +77,26 @@ public class Bill {
         this.balanceAmount = balanceAmount;
     }
 
+    // NEW GETTER & SETTER
+    public LocalDate getBillDate() {
+        return billDate;
+    }
+
+    public void setBillDate(LocalDate billDate) {
+        this.billDate = billDate;
+    }
+
     public List<BillItem> getItems() {
         return items;
     }
 
     public void setItems(List<BillItem> items) {
-
         this.items = items;
 
-        for (BillItem item : items) {
-            item.setBill(this);
+        if (items != null) {
+            for (BillItem item : items) {
+                item.setBill(this);
+            }
         }
     }
 }

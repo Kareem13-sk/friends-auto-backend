@@ -168,5 +168,39 @@ public class WeeklyBillController {
         weeklyBillRepository.deleteById(id);
 
     }
+    // ==========================
+// UPDATE WEEKLY BILL
+// ==========================
+    @PutMapping("/{id}")
+    public WeeklyBill updateBill(
+            @PathVariable Long id,
+            @RequestBody WeeklyBill updatedBill) {
+
+        WeeklyBill bill = weeklyBillRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Weekly Bill Not Found"));
+
+        bill.setCustomerName(
+                updatedBill.getCustomerName());
+
+        bill.setTotalAmount(
+                updatedBill.getTotalAmount());
+
+        bill.setPreviousBalance(
+                updatedBill.getPreviousBalance());
+
+        bill.setPaidAmount(
+                updatedBill.getPaidAmount());
+
+        bill.setBalanceAmount(
+                updatedBill.getBalanceAmount());
+
+        bill.setItems(updatedBill.getItems());
+
+        return weeklyBillRepository.save(bill);
+
+    }
 
 }

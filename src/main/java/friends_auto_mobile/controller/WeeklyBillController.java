@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import friends_auto_mobile.entity.WeeklyBillItem;
 import java.util.ArrayList;
 import java.util.List;
+import friends_auto_mobile.entity.WeeklyCustomer;
+import friends_auto_mobile.repository.WeeklyCustomerRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +28,9 @@ public class WeeklyBillController {
 
     @Autowired
     private WeeklyEntryRepository weeklyEntryRepository;
+
+    @Autowired
+    private WeeklyCustomerRepository weeklyCustomerRepository;
 
     // ==========================
     // SAVE WEEKLY BILL
@@ -82,11 +87,35 @@ public class WeeklyBillController {
         WeeklyBill savedBill = weeklyBillRepository.save(bill);
 
 // Mark all entries as BILLED
+        // Mark all entries as BILLED
         for (WeeklyEntry entry : entries) {
 
             entry.setStatus("BILLED");
 
             weeklyEntryRepository.save(entry);
+
+        }
+
+// =========================
+// UPDATE CUSTOMER BALANCE
+// =========================
+
+        WeeklyCustomer customer =
+                weeklyCustomerRepository.findAll()
+                        .stream()
+                        .filter(c ->
+                                c.getCustomerName()
+                                        .equalsIgnoreCase(
+                                                bill.getCustomerName()))
+                        .findFirst()
+                        .orElse(null);
+
+        if (customer != null) {
+
+            customer.setPreviousBalance(
+                    bill.getBalanceAmount());
+
+            weeklyCustomerRepository.save(customer);
 
         }
 

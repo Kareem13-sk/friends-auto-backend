@@ -55,6 +55,27 @@ public class WeeklyEntryController {
                 );
 
     }
+    // ===========================
+// UPDATE PRODUCT
+// ===========================
+    @PutMapping("/{id}")
+    public WeeklyEntry updateProduct(
+            @PathVariable Long id,
+            @RequestBody WeeklyEntry updatedEntry) {
+
+        WeeklyEntry entry = weeklyEntryRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Product Not Found"));
+
+        entry.setProductName(updatedEntry.getProductName());
+        entry.setQuantity(updatedEntry.getQuantity());
+        entry.setPercentage(updatedEntry.getPercentage());
+        entry.setActualPrice(updatedEntry.getActualPrice());
+        entry.setFinalPrice(updatedEntry.getFinalPrice());
+        entry.setTotal(updatedEntry.getTotal());
+
+        return weeklyEntryRepository.save(entry);
+    }
 
     // ===========================
     // DELETE PRODUCT

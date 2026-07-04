@@ -197,7 +197,15 @@ public class WeeklyBillController {
         bill.setBalanceAmount(
                 updatedBill.getBalanceAmount());
 
-        bill.setItems(updatedBill.getItems());
+        bill.getItems().clear();
+
+        for (WeeklyBillItem item : updatedBill.getItems()) {
+
+            item.setWeeklyBill(bill);
+
+            bill.getItems().add(item);
+
+        }
 
         return weeklyBillRepository.save(bill);
 

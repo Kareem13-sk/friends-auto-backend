@@ -44,7 +44,7 @@ public class WeeklyEntryController {
     // ===========================
     // GET CUSTOMER PRODUCTS
     // ===========================
-    @GetMapping("/{customerName}")
+    @GetMapping("/customer/{customerName}")
     public List<WeeklyEntry> getCustomerProducts(
             @PathVariable String customerName) {
 
@@ -53,6 +53,7 @@ public class WeeklyEntryController {
                         customerName,
                         "PENDING"
                 );
+
     }
 
     // ===========================

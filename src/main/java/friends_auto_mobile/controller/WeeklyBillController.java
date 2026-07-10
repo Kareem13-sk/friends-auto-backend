@@ -1,21 +1,18 @@
 package friends_auto_mobile.controller;
 
 import friends_auto_mobile.entity.WeeklyBill;
-import friends_auto_mobile.repository.WeeklyBillRepository;
-
+import friends_auto_mobile.entity.WeeklyBillItem;
+import friends_auto_mobile.entity.WeeklyCustomer;
 import friends_auto_mobile.entity.WeeklyEntry;
+import friends_auto_mobile.repository.WeeklyBillRepository;
+import friends_auto_mobile.repository.WeeklyCustomerRepository;
 import friends_auto_mobile.repository.WeeklyEntryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import friends_auto_mobile.entity.WeeklyBillItem;
-import java.util.ArrayList;
-import java.util.List;
-import friends_auto_mobile.entity.WeeklyCustomer;
-import friends_auto_mobile.repository.WeeklyCustomerRepository;
-
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -62,17 +59,11 @@ public class WeeklyBillController {
             WeeklyBillItem item = new WeeklyBillItem();
 
             item.setProductName(entry.getProductName());
-
             item.setQuantity(entry.getQuantity());
-
             item.setActualPrice(entry.getActualPrice());
-
             item.setPercentage(entry.getPercentage());
-
             item.setFinalPrice(entry.getFinalPrice());
-
             item.setPrice(entry.getFinalPrice());
-
             item.setTotal(entry.getTotal());
 
             item.setWeeklyBill(bill);
@@ -83,10 +74,35 @@ public class WeeklyBillController {
 
         bill.setItems(items);
 
-// Save Weekly Bill
-        WeeklyBill savedBill = weeklyBillRepository.save(bill);
+        // ==========================
+        // CALCULATE TOTALS
+        // ==========================
 
-// Mark all entries as BILLED
+        double productsTotal =
+                bill.getTotalAmount() == null
+                        ? 0
+                        : bill.getTotalAmount();
+
+        double previousBalance =
+                bill.getPreviousBalance() == null
+                        ? 0
+                        : bill.getPreviousBalance();
+
+        double paid =
+                bill.getPaidAmount() == null
+                        ? 0
+                        : bill.getPaidAmount();
+
+        double grandTotal =
+                productsTotal + previousBalance;
+
+        bill.setBalanceAmount(
+                grandTotal - paid);
+
+        // Save Weekly Bill
+        WeeklyBill savedBill =
+                weeklyBillRepository.save(bill);
+
         // Mark all entries as BILLED
         for (WeeklyEntry entry : entries) {
 
@@ -96,9 +112,9 @@ public class WeeklyBillController {
 
         }
 
-// =========================
-// UPDATE CUSTOMER BALANCE
-// =========================
+        // ==========================
+        // UPDATE CUSTOMER BALANCE
+        // ==========================
 
         WeeklyCustomer customer =
                 weeklyCustomerRepository.findAll()
@@ -121,7 +137,6 @@ public class WeeklyBillController {
 
         return savedBill;
     }
-
     // ==========================
     // GET ALL WEEKLY BILLS
     // ==========================
@@ -169,8 +184,8 @@ public class WeeklyBillController {
 
     }
     // ==========================
-// UPDATE WEEKLY BILL
-// ==========================
+    // UPDATE WEEKLY BILL
+    // ==========================
     @PutMapping("/{id}")
     public WeeklyBill updateBill(
             @PathVariable Long id,
@@ -182,6 +197,7 @@ public class WeeklyBillController {
                         new RuntimeException(
                                 "Weekly Bill Not Found"));
 
+        // Update basic details
         bill.setCustomerName(
                 updatedBill.getCustomerName());
 
@@ -189,21 +205,76 @@ public class WeeklyBillController {
                 updatedBill.getTotalAmount());
 
         bill.setPreviousBalance(
-                updatedBill.getPreviousBalance());
+                updatedBill.getPreviousBalance() == null
+                        ? 0
+                        : updatedBill.getPreviousBalance());
 
         bill.setPaidAmount(
                 updatedBill.getPaidAmount());
 
+        // ==========================
+        // CALCULATE BALANCE
+        // ==========================
+
+        double productsTotal =
+                updatedBill.getTotalAmount() == null
+                        ? 0
+                        : updatedBill.getTotalAmount();
+
+        double previousBalance =
+                updatedBill.getPreviousBalance() == null
+                        ? 0
+                        : updatedBill.getPreviousBalance();
+
+        double paid =
+                updatedBill.getPaidAmount() == null
+                        ? 0
+                        : updatedBill.getPaidAmount();
+
+        double grandTotal =
+                productsTotal + previousBalance;
+
         bill.setBalanceAmount(
-                updatedBill.getBalanceAmount());
+                grandTotal - paid);
+
+        // ==========================
+        // UPDATE PRODUCTS
+        // ==========================
 
         bill.getItems().clear();
 
-        for (WeeklyBillItem item : updatedBill.getItems()) {
+        if (updatedBill.getItems() != null) {
 
-            item.setWeeklyBill(bill);
+            for (WeeklyBillItem item : updatedBill.getItems()) {
 
-            bill.getItems().add(item);
+                item.setWeeklyBill(bill);
+
+                bill.getItems().add(item);
+
+            }
+
+        }
+
+        // ==========================
+        // UPDATE CUSTOMER BALANCE
+        // ==========================
+
+        WeeklyCustomer customer =
+                weeklyCustomerRepository.findAll()
+                        .stream()
+                        .filter(c ->
+                                c.getCustomerName()
+                                        .equalsIgnoreCase(
+                                                bill.getCustomerName()))
+                        .findFirst()
+                        .orElse(null);
+
+        if (customer != null) {
+
+            customer.setPreviousBalance(
+                    bill.getBalanceAmount());
+
+            weeklyCustomerRepository.save(customer);
 
         }
 

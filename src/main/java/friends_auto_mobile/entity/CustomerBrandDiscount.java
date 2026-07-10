@@ -12,7 +12,10 @@ public class CustomerBrandDiscount {
 
     private Long customerId;
 
-    private String customerName; // ADD THIS
+    private String customerName;
+
+    // NEW FIELD
+    private String customerType;
 
     private String brand;
 
@@ -39,6 +42,16 @@ public class CustomerBrandDiscount {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    // NEW GETTER
+    public String getCustomerType() {
+        return customerType;
+    }
+
+    // NEW SETTER
+    public void setCustomerType(String customerType) {
+        this.customerType = customerType;
     }
 
     public String getBrand() {

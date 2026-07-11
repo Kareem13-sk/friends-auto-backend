@@ -238,21 +238,31 @@ public class WeeklyBillController {
                 grandTotal - paid);
 
         // ==========================
-        // UPDATE PRODUCTS
-        // ==========================
+// UPDATE PRODUCTS
+// ==========================
 
+// Remove old items
         bill.getItems().clear();
 
+// Add new items
         if (updatedBill.getItems() != null) {
 
             for (WeeklyBillItem item : updatedBill.getItems()) {
 
-                item.setWeeklyBill(bill);
+                WeeklyBillItem newItem = new WeeklyBillItem();
 
-                bill.getItems().add(item);
+                newItem.setProductName(item.getProductName());
+                newItem.setQuantity(item.getQuantity());
+                newItem.setActualPrice(item.getActualPrice());
+                newItem.setPercentage(item.getPercentage());
+                newItem.setFinalPrice(item.getFinalPrice());
+                newItem.setPrice(item.getPrice());
+                newItem.setTotal(item.getTotal());
 
+                newItem.setWeeklyBill(bill);
+
+                bill.getItems().add(newItem);
             }
-
         }
 
         // ==========================

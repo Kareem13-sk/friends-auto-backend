@@ -98,7 +98,16 @@ public class BillController {
 
     @GetMapping
     public List<Bill> getAllBills() {
-        return billRepository.findAll();
+
+        long start = System.currentTimeMillis();
+
+        List<Bill> bills = billRepository.findAll();
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Time to fetch bills: " + (end - start) + " ms");
+
+        return bills;
     }
 
     @GetMapping("/customer/{customerName}")

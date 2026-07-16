@@ -23,6 +23,23 @@ public class CustomerBrandDiscountController {
     public CustomerBrandDiscount save(
             @RequestBody CustomerBrandDiscount data) {
 
+        List<CustomerBrandDiscount> existingList =
+                repository.findByCustomerIdAndCustomerTypeAndBrand(
+                        data.getCustomerId(),
+                        data.getCustomerType(),
+                        data.getBrand()
+                );
+
+        if (!existingList.isEmpty()) {
+
+            CustomerBrandDiscount existing = existingList.get(0);
+
+            existing.setCustomerName(data.getCustomerName());
+            existing.setDiscountPercentage(data.getDiscountPercentage());
+
+            return repository.save(existing);
+        }
+
         return repository.save(data);
     }
 
@@ -43,12 +60,18 @@ public class CustomerBrandDiscountController {
             @RequestParam String customerType,
             @RequestParam String brand) {
 
-        return repository
-                .findByCustomerIdAndCustomerTypeAndBrand(
+        List<CustomerBrandDiscount> list =
+                repository.findByCustomerIdAndCustomerTypeAndBrand(
                         customerId,
                         customerType,
-                        brand)
-                .orElse(null);
+                        brand
+                );
+
+        if (list.isEmpty()) {
+            return null;
+        }
+
+        return list.get(0);
     }
 
     // =========================

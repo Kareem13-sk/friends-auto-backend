@@ -29,7 +29,7 @@ public class BillItem {
 
     private Double total;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bill_id")
     @JsonBackReference
     private Bill bill;
